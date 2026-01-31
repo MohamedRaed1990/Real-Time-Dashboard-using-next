@@ -1,6 +1,20 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import AssetTable from '../components/AssetTable'
 
+function generateMockAssets() {
+  const types = ['Stock', 'Crypto', 'ETF']
+  const symbols = ['AAPL', 'GOOGL', 'TSLA', 'BTC', 'ETH', 'USO', 'VOO', 'MSFT', 'AMZN', 'SOL']
+  return symbols.map((s, i) => ({
+    id: i + 1,
+    symbol: s,
+    name: `${s} Inc.`,
+    type: types[i % types.length],
+    price: Math.random() * (i < 4 ? 1500 : 500),
+    change: (Math.random() - 0.5) * 5,
+    allocation: Math.round(Math.random() * 30)
+  }))
+}
+
 export default function Home() {
   const [assets, setAssets] = useState([])
   const [search, setSearch] = useState('')
@@ -9,7 +23,11 @@ export default function Home() {
   const [sortBy, setSortBy] = useState('allocation')
   const [sortDir, setSortDir] = useState('desc')
 
-
+  
+  useEffect(() => {
+    setAssets(generateMockAssets())
+  }, [])
+ 
   useEffect(() => {
     const t = setTimeout(() => setDebounced(search.trim()), 300)
     return () => clearTimeout(t)
