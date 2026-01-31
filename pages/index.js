@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import AssetTable from '../components/AssetTable'
+import useDebouncedValue from '../src/hooks/useDebounce'
 
 function generateMockAssets() {
   const types = ['Stock', 'Crypto', 'ETF']
@@ -15,10 +16,11 @@ function generateMockAssets() {
   }))
 }
 
+
 export default function Home() {
   const [assets, setAssets] = useState([])
   const [search, setSearch] = useState('')
-  const [debounced, setDebounced] = useState('')
+  const debounced = useDebouncedValue(search, 300)
   const [typeFilter, setTypeFilter] = useState('All')
   const [sortBy, setSortBy] = useState('allocation')
   const [sortDir, setSortDir] = useState('desc')
@@ -28,11 +30,6 @@ export default function Home() {
     setAssets(generateMockAssets())
   }, [])
  
-  useEffect(() => {
-    const t = setTimeout(() => setDebounced(search.trim()), 300)
-    return () => clearTimeout(t)
-  }, [search])
-
   useEffect(() => {
     const id = setInterval(() => {
       setAssets((prev) => {
